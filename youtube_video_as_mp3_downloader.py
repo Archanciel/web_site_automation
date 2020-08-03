@@ -1,6 +1,5 @@
-# pip install pytube3
-from pytube import YouTube
 import re, os
+from pytube import YouTube, Playlist
 
 YOUTUBE_STREAM_AUDIO = '140'
 
@@ -11,13 +10,12 @@ else:
 	CONVERT = False # can be set to True
 	DOWNLOAD_DIR = 'D:\\Users\\Jean-Pierre\\Downloads'
 
-# download a file with only audio, to save space
-# if the final goal is to convert to mp3
-#youtubeLink = 'https://youtu.be/nII-KRCER4E' "Occe Nach"
-youtubeLink = 'https://youtu.be/5SLERnIOr7g' "Marie de Solemne"
-youTubeVideo = YouTube(youtubeLink)
-audioStream = youTubeVideo.streams.get_by_itag(YOUTUBE_STREAM_AUDIO)
-audioStream.download(output_path=DOWNLOAD_DIR)
+playlist = Playlist('https://www.youtube.com/playlist?list=PLzwWSJNcZTMSW-v1x6MhHFKkwrGaEgQ-L')
+playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+
+for video in playlist:
+	audioStream = video.streams.get_by_itag(YOUTUBE_STREAM_AUDIO)
+	audioStream.download(output_path=DOWNLOAD_DIR)
 
 for file in [n for n in os.listdir(DOWNLOAD_DIR) if re.search('mp4', n)]:
 	fullPath = os.path.join(DOWNLOAD_DIR, file)
@@ -30,3 +28,5 @@ for file in [n for n in os.listdir(DOWNLOAD_DIR) if re.search('mp4', n)]:
 		clip.write_audiofile(outputPath)
 	else:
 		os.rename(fullPath, outputPath)
+		
+
