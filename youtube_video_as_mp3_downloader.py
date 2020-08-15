@@ -1,5 +1,5 @@
 import re, os
-from pytube import YouTube, Playlist
+from pytube import Playlist
 
 YOUTUBE_STREAM_AUDIO = '140'
 
@@ -12,6 +12,7 @@ else:
 
 playlist = Playlist('https://www.youtube.com/playlist?list=PLzwWSJNcZTMSW-v1x6MhHFKkwrGaEgQ-L')
 playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+print(playlist.title())
 
 for video in playlist.videos:
 	audioStream = video.streams.get_by_itag(YOUTUBE_STREAM_AUDIO)
